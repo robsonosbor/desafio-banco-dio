@@ -1,4 +1,3 @@
-
 public abstract class Conta implements IConta {
 	
 	private static final int AGENCIA_PADRAO = 1;
@@ -17,18 +16,30 @@ public abstract class Conta implements IConta {
 
 	@Override
 	public void sacar(double valor) {
+		if (valor <= 0) {
+			throw new IllegalArgumentException("Valor para saque deve ser positivo.");
+		}
+		if (saldo < valor) {
+			throw new IllegalArgumentException("Saldo insuficiente.");
+		}
 		saldo -= valor;
 	}
 
 	@Override
 	public void depositar(double valor) {
+		if (valor <= 0) {
+			throw new IllegalArgumentException("Valor para depósito deve ser positivo.");
+		}
 		saldo += valor;
 	}
 
 	@Override
 	public void transferir(double valor, IConta contaDestino) {
-		this.sacar(valor);
-		contaDestino.depositar(valor);
+		if (valor <= 0) {
+			throw new IllegalArgumentException("Valor para transferência deve ser positivo.");
+		}
+		this.sacar(valor); // Usa o método sacar que já verifica saldo e valor
+		contaDestino.depositar(valor); // Usa o método depositar que já verifica o valor
 	}
 
 	public int getAgencia() {
@@ -41,6 +52,10 @@ public abstract class Conta implements IConta {
 
 	public double getSaldo() {
 		return saldo;
+	}
+	
+	public Cliente getCliente() {
+		return cliente;
 	}
 
 	protected void imprimirInfosComuns() {
